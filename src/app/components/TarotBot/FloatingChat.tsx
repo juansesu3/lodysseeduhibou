@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 interface Message {
   sender: "user" | "bot";
@@ -65,7 +66,7 @@ export default function FloatingChat() {
                        transition transform hover:scale-110 
                        motion-safe:animate-pulse relative z-40 bg-gradient-to-tr from-[#C8B8D7] to-[#5C4B6C] shadow-lg"
           >
-            <img src="/assets/witch-ball.png" className="w-10 h-10" alt="Mi ícono" />
+            <Image src="/assets/witch-ball.png" className="w-10 h-10" alt="Mi ícono" width={500} height={500}/>
           </motion.button>
         ) : (
           // Panel

@@ -9,7 +9,7 @@ const MotionArrow = motion(IoMdArrowDropdown);
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
-    const [activeDropdown, setActiveDropdown] = useState(null); // 👈 nuevo estado
+    const [activeDropdown, setActiveDropdown] = useState<string | null>(null); // 👈 nuevo estado
 
     const menuItems = [
         { label: "Accueil", href: "#accueil" },
