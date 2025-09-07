@@ -5,6 +5,9 @@ import Navbar from "./components/NavBar";
 import FloatingChat from "./components/TarotBot/FloatingChat";
 import { Alegreya, Fondamento } from 'next/font/google';
 import MagicCursor from "./components/magic/MagicCursor";
+import Footer from "./components/Footer";
+import StarsBackground from "./components/StarsBackground";
+
 
 // Configuramos las fuentes
 const alegreya = Alegreya({ subsets: ['latin'], weight: ['400','700','900'] });
@@ -19,10 +22,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fr">
       <body className={`${alegreya.className} bg-efe7dd text-gray-800`}>
+        {/* <StarsBackground /> */}
         <MagicCursor/>
         <Navbar />
         <main className="pt-16">{children}</main>
         <FloatingChat/>
+        <Footer/>
       </body>
     </html>
   );
