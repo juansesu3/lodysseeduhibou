@@ -1,6 +1,8 @@
 'use client';
 import React from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
+import { useTheme } from "next-themes";
 
 const tirages = [
   {
@@ -41,36 +43,49 @@ const tirages = [
   },
 ];
 
+const TiragesSection = () => {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
-const TiragesSection = () => (
-  <section id="tirages" className="py-20 px-6 bg-[#F3EFEA]">
-    <h2 className="text-3xl md:text-5xl font-bold text-[#5C4B6C] text-center mb-12">
-      Nos Tirages
-    </h2>
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-      {tirages.map((tirage) => (
-        <motion.div
-          key={tirage.title}
-          whileHover={{ y: -10, scale: 1.05 }}
-          className="bg-white/30 backdrop-blur-md rounded-2xl shadow-lg p-6 flex flex-col items-center text-center cursor-pointer"
-        >
-          <img
-            src={tirage.image}
-            alt={tirage.title}
-            className="mb-4 w-32 h-32 object-contain"
-          />
-          <h3 className="text-xl font-semibold text-[#5C4B6C] mb-2">{tirage.title}</h3>
-          <p className="text-[#4B2E4B] mb-4">{tirage.description}</p>
-          <a
-            href={tirage.href}
-            className="px-4 py-2 bg-[#5C4B6C] text-white rounded-full hover:bg-[#A57C8C] transition-colors duration-300"
+  const bgColor = isDark ? "bg-gray-900" : "bg-[#F3EFEA]";
+  const cardBg = isDark ? "bg-gray-800/80 backdrop-blur-md" : "bg-white/30 backdrop-blur-md";
+  const titleColor = isDark ? "text-gray-200" : "text-[#5C4B6C]";
+  const textColor = isDark ? "text-gray-400" : "text-[#4B2E4B]";
+  const buttonBg = isDark ? "bg-gray-700" : "bg-[#5C4B6C]";
+  const buttonHover = isDark ? "hover:bg-gray-600" : "hover:bg-[#A57C8C]";
+
+  return (
+    <section id="tirages" className={`py-20 px-6 ${bgColor}`}>
+      <h2 className={`text-3xl md:text-5xl font-bold text-center mb-12 ${titleColor}`}>
+        Nos Tirages
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        {tirages.map((tirage) => (
+          <motion.div
+            key={tirage.title}
+            whileHover={{ y: -10, scale: 1.05 }}
+            className={`rounded-2xl shadow-lg p-6 flex flex-col items-center text-center cursor-pointer ${cardBg}`}
           >
-            Découvrir
-          </a>
-        </motion.div>
-      ))}
-    </div>
-  </section>
-);
+            <Image
+              src={tirage.image}
+              alt={tirage.title}
+              width={500}
+              height={500}
+              className="mb-4 w-32 h-32 object-contain"
+            />
+            <h3 className={`text-xl font-semibold mb-2 ${titleColor}`}>{tirage.title}</h3>
+            <p className={`mb-4 ${textColor}`}>{tirage.description}</p>
+            <a
+              href={tirage.href}
+              className={`px-4 py-2 rounded-full text-white transition-colors duration-300 ${buttonBg} ${buttonHover}`}
+            >
+              Découvrir
+            </a>
+          </motion.div>
+        ))}
+      </div>
+    </section>
+  );
+};
 
 export default TiragesSection;
