@@ -1,9 +1,12 @@
 import React from 'react'
+import OracleLandingPage from '../components/oracle/OracleLandingPage'
 
 const Page = () => {
   return (
     
-    <div>page</div>
+    <div>
+      <OracleLandingPage/>
+    </div>
   )
 }
 

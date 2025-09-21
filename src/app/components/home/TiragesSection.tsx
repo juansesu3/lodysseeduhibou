@@ -1,8 +1,9 @@
-'use client';
+"use client";
 import React from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useTheme } from "next-themes";
+import { fadeSmokeWind, staggerContainer } from "@/app/components/utils/animations";  // <-- importamos animaciones
 
 const tirages = [
   {
@@ -47,8 +48,10 @@ const TiragesSection = () => {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
-  const bgColor = isDark ? "bg-gray-900" : "bg-[#F3EFEA]";
-  const cardBg = isDark ? "bg-gray-800/80 backdrop-blur-md" : "bg-white/30 backdrop-blur-md";
+  const bgColor = isDark ? "bg-transparent" : "bg-[#F3EFEA]";
+  const cardBg = isDark
+    ? "bg-gray-800/80 backdrop-blur-md"
+    : "bg-white/30 backdrop-blur-md";
   const titleColor = isDark ? "text-gray-200" : "text-[#5C4B6C]";
   const textColor = isDark ? "text-gray-400" : "text-[#4B2E4B]";
   const buttonBg = isDark ? "bg-gray-700" : "bg-[#5C4B6C]";
@@ -56,13 +59,29 @@ const TiragesSection = () => {
 
   return (
     <section id="tirages" className={`py-20 px-6 ${bgColor}`}>
-      <h2 className={`text-3xl md:text-5xl font-bold text-center mb-12 ${titleColor}`}>
+      <motion.h2
+        className={`text-3xl md:text-5xl font-bold text-center mb-12 ${titleColor}`}
+        variants={fadeSmokeWind("right")}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        custom={0.1}
+      >
         Nos Tirages
-      </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        {tirages.map((tirage) => (
+      </motion.h2>
+
+      <motion.div
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8"
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+      >
+        {tirages.map((tirage, index) => (
           <motion.div
             key={tirage.title}
+            variants={fadeSmokeWind("left")}
+            custom={0.2 * index}
             whileHover={{ y: -10, scale: 1.05 }}
             className={`rounded-2xl shadow-lg p-6 flex flex-col items-center text-center cursor-pointer ${cardBg}`}
           >
@@ -73,17 +92,21 @@ const TiragesSection = () => {
               height={500}
               className="mb-4 w-32 h-32 object-contain"
             />
-            <h3 className={`text-xl font-semibold mb-2 ${titleColor}`}>{tirage.title}</h3>
+            <h3 className={`text-xl font-semibold mb-2 ${titleColor}`}>
+              {tirage.title}
+            </h3>
             <p className={`mb-4 ${textColor}`}>{tirage.description}</p>
-            <a
+            <motion.a
               href={tirage.href}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               className={`px-4 py-2 rounded-full text-white transition-colors duration-300 ${buttonBg} ${buttonHover}`}
             >
               Découvrir
-            </a>
+            </motion.a>
           </motion.div>
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 };

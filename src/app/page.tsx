@@ -16,12 +16,12 @@ export default function Home() {
 
   return (
     
-   <>
+   <div className="bg-gradient-to-b from-gray-900 via-gray-950 to-gray-900 text-gray-100">
    <HeroSection/>
    <AboutSection />
       <TiragesSection />
       <AIOracleSection />
       <CTASection />
-   </>
+   </div>
   );
 }
