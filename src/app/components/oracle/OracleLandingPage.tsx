@@ -6,7 +6,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
 export default function OracleLandingPage() {
-  const { theme, setTheme } = useTheme();
+  const { theme} = useTheme();
   const isDark = theme === "dark";
   const [mounted, setMounted] = useState(false);
 
