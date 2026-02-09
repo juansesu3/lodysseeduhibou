@@ -73,7 +73,7 @@ const HeroSection = () => {
         viewport={{ once: true }}
         custom={0.5}
       >
-         J'aide les femmes à transformer leuurs blocages en force grâce au tarot.
+        J'aide les femmes à transformer leurs blocages en force grâce au tarot.
       </motion.p>
 
       {/* Botón */}
