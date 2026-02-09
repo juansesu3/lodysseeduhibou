@@ -1,12 +1,19 @@
 "use client";
-import React from "react";
+import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { motion } from "framer-motion";
 import { fadeSmokeWind, staggerContainer } from "@/app/components/utils/animations"; // <-- importa tus animaciones
 
 const AboutSection = () => {
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
+  // Evita mismatch/hydration flicker
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const isDark = mounted ? resolvedTheme === "dark" : true;
+  // Mantenemos los puntos, cambiando el color en tema claro para que se vea sobre #F3EFEA
+  const dotsBg = isDark
+    ? "opacity-[0.08] [background-image:radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] [background-size:28px_28px]"
+    : "opacity-[0.10] [background-image:radial-gradient(circle_at_1px_1px,#5C4B6C_1px,transparent_0)] [background-size:28px_28px]";
 
   const bgColor = isDark ? "bg-transparent" : "bg-[#F3EFEA]";
   const titleColor = isDark ? "text-gray-200" : "text-[#5C4B6C]";
@@ -14,8 +21,11 @@ const AboutSection = () => {
 
   return (
     <section
-      className={`relative flex flex-col items-center text-center py-20 px-6 ${bgColor}`}
+      className={`py-20 px-6 flex flex-col items-center text-center relative ${bgColor}`}
     >
+      <div className="pointer-events-none absolute inset-0">
+        <div className={`absolute inset-0 ${dotsBg}`} />
+      </div>
       <motion.div
         variants={staggerContainer}
         initial="hidden"
@@ -27,7 +37,7 @@ const AboutSection = () => {
           variants={fadeSmokeWind("right")}
           custom={0.1}
         >
-          La Philosophie
+          Ma Philosophie
         </motion.h2>
         <motion.p
           className={`max-w-3xl text-lg md:text-xl mb-6 ${textColor}`}

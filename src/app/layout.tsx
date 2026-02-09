@@ -2,7 +2,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "./components/NavBar";
-import FloatingChat from "./components/TarotBot/FloatingChat";
 import { Alegreya } from 'next/font/google';
 import MagicCursor from "./components/magic/MagicCursor";
 import Footer from "./components/Footer";
@@ -21,20 +20,20 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" suppressHydrationWarning >
-     
+
       <body
         className={`${alegreya.className} bg-customLight text-gray-800 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300`}
       >
-         <Providers>
+        <Providers>
           {/* <StarsBackground /> */}
           <MagicCursor />
           <Navbar />
           <main className="pt-16">{children}</main>
-          <FloatingChat />
+          {/* <FloatingChat /> */}
           <Footer />
-          </Providers>
+        </Providers>
       </body>
-      
+
     </html>
   );
 }

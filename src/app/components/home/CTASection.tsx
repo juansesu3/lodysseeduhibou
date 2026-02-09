@@ -13,11 +13,18 @@ const CTASection = () => {
   const textColor = isDark ? "text-gray-400" : "text-[#4B2E4B]";
   const buttonBg = isDark ? "bg-gray-700" : "bg-[#5C4B6C]";
   const buttonHover = isDark ? "hover:bg-gray-600" : "hover:bg-[#A57C8C]";
+  const dotsBg = isDark
+    ? "opacity-[0.08] [background-image:radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] [background-size:28px_28px]"
+    : "opacity-[0.10] [background-image:radial-gradient(circle_at_1px_1px,#5C4B6C_1px,transparent_0)] [background-size:28px_28px]";
 
   return (
     <section
-      className={`py-20 px-6 flex flex-col items-center text-center ${bgColor}`}
+      className={`py-20 px-6 flex flex-col items-center text-center relative ${bgColor}`}
     >
+        <div className="pointer-events-none absolute inset-0">
+      
+      <div className={`absolute inset-0 ${dotsBg}`} />
+    </div>
       <motion.h2
         className={`text-3xl md:text-5xl font-bold mb-6 ${titleColor}`}
         variants={fadeSmokeWind("right")}
@@ -26,7 +33,7 @@ const CTASection = () => {
         viewport={{ once: true }}
         custom={0.1}
       >
-        Prêt pour votre voyage magique ?
+        Prêt pour ton voyage magique ?
       </motion.h2>
 
       <motion.p
@@ -37,7 +44,7 @@ const CTASection = () => {
         viewport={{ once: true }}
         custom={0.3}
       >
-        Contactez-nous ou explorez nos tirages pour découvrir votre chemin.
+        Contacte-moi ou explore mes tirages pour découvrir ton chemin.
       </motion.p>
 
       <motion.a
@@ -51,7 +58,7 @@ const CTASection = () => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
-        Contactez-nous
+        Contacte-moi
       </motion.a>
     </section>
   );
