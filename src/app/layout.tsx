@@ -40,7 +40,7 @@ export const metadata: Metadata = {
       "J’aide les femmes à transformer leurs blocages en force intérieure grâce au tarot — avec clarté, douceur et guidance.",
     images: [
       {
-        url: "/og/og-default.jpg", // se vuelve absoluto con metadataBase
+        url: "/assets/romi.jpeg", // se vuelve absoluto con metadataBase
         width: 1200,
         height: 630,
         alt: "L’Odyssée du Hibou — Tarot & Guidance",
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     title: "L’Odyssée du Hibou",
     description:
       "J’aide les femmes à transformer leurs blocages en force intérieure grâce au tarot — avec clarté, douceur et guidance.",
-    images: ["/og/og-default.jpg"],
+    images: ["/assets/romi.jpeg"],
   },
 
   robots: {
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
 
   icons: {
     icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
+    apple: "/assets/romi.jpeg",
   },
 };
 
