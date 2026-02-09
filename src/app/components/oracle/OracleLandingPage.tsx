@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { fadeSmokeWind } from "@/app/components/utils/animations";
 
 type Role = "assistant" | "user";
 type Stage = "choose_spread" | "ask_question" | "reading" | "follow_up";
@@ -83,8 +84,6 @@ export default function OracleLandingPage() {
 
   useEffect(() => setMounted(true), []);
 
-  // ✅ Auto-scroll cuando cambia la lista de mensajes
-  // (mucho más fiable que hacerlo por stage)
   const initialMessages: Message[] = useMemo(
     () => [
       {
@@ -106,6 +105,7 @@ export default function OracleLandingPage() {
 
   const [messages, setMessages] = useState<Message[]>(initialMessages);
 
+  // Auto-scroll sur chaque nouveau message
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -224,7 +224,6 @@ export default function OracleLandingPage() {
     const v = (value ?? input).trim();
     if (!v) return;
 
-    // Evita spam mientras está leyendo
     if (stage === "reading") return;
 
     // Chip actions
@@ -279,9 +278,8 @@ export default function OracleLandingPage() {
 
   if (!mounted) return null;
 
-  // Fondo inmersivo (full-screen)
+  // Fondo inmersivo full-screen
   const bgColor = isDark ? "bg-transparent" : "bg-[#F3EFEA] text-gray-900";
-
   const glass = isDark ? "bg-black/35 border-white/10" : "bg-white/55 border-black/10";
   const subtleText = isDark ? "text-gray-300" : "text-gray-700";
 
@@ -297,10 +295,40 @@ export default function OracleLandingPage() {
           }
         />
       </div>
+
+      {/* Fog overlay while reading (immersive smoke) */}
+      <AnimatePresence>
+        {stage === "reading" && (
+          <motion.div
+            className="pointer-events-none absolute inset-0 z-10"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35 }}
+          >
+            <motion.div
+              className={`absolute inset-0 ${isDark ? "bg-white/5" : "bg-[#5C4B6C]/10"} blur-3xl`}
+              animate={{
+                x: [0, 34, -26, 0],
+                y: [0, -18, 22, 0],
+                opacity: [0.22, 0.32, 0.22],
+              }}
+              transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Fullscreen layout */}
       <div className="relative min-h-[100svh] flex flex-col">
-        {/* Header sticky (top) */}
-        <header className={`sticky top-16 z-20 border-b ${glass} backdrop-blur-xl`}>
+        {/* Header sticky (top) — smoke on mount */}
+        <motion.header
+          className={`sticky top-16 z-20 border-b ${glass} backdrop-blur-xl`}
+          variants={fadeSmokeWind("right")}
+          initial="hidden"
+          animate="visible"
+          custom={0.08}
+        >
           <div className="mx-auto w-full max-w-5xl px-4 py-4 flex items-start md:items-center justify-between gap-3">
             <div className="flex flex-col">
               <h1 className="text-xl md:text-2xl font-bold font-titles">
@@ -310,7 +338,6 @@ export default function OracleLandingPage() {
                 Guidance symbolique • Tirages rapides • Style “Sorcière”
               </p>
 
-              {/* Estado discreto */}
               <div className="mt-2 text-[11px] md:text-xs">
                 <span className={`${isDark ? "text-gray-400" : "text-gray-600"}`}>
                   {stage === "choose_spread"
@@ -329,7 +356,7 @@ export default function OracleLandingPage() {
                 href="/pwa-download"
                 className="px-3 py-2 rounded-xl text-sm font-semibold bg-purple-600 hover:bg-purple-700 text-white transition shadow"
               >
-                 Installer
+                Installer
               </Link>
               <button
                 onClick={resetToStart}
@@ -338,63 +365,73 @@ export default function OracleLandingPage() {
                 }`}
                 title="Recommencer"
               >
-                ↺ 
+                ↺
               </button>
             </div>
           </div>
-        </header>
+        </motion.header>
 
-        {/* Messages area (takes the screen) */}
-        <section ref={scrollRef} className="flex-1 overflow-y-auto">
+        {/* Messages area */}
+        <section ref={scrollRef} className="flex-1 overflow-y-auto relative z-0">
           <div className="mx-auto w-full max-w-5xl px-4 py-6 space-y-4">
             <AnimatePresence initial={false}>
-              {messages.map((m) => (
-                <motion.div
-                  key={m.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
-                >
-                  <div
-                    className={`max-w-[92%] md:max-w-[70%] rounded-2xl px-4 py-3 text-sm md:text-base whitespace-pre-line leading-relaxed shadow ${
-                      m.role === "user"
-                        ? "bg-purple-600 text-white"
-                        : isDark
-                        ? "bg-black/70 text-gray-100 border border-white/10"
-                        : "bg-white text-gray-900 border border-black/10"
-                    }`}
+              {messages.map((m, i) => {
+                const delayIndex = Math.min(i, 10); // evita delays gigantes si hay muchos mensajes
+                return (
+                  <motion.div
+                    key={m.id}
+                    variants={fadeSmokeWind(m.role === "user" ? "right" : "left")}
+                    initial="hidden"
+                    animate="visible"
+                    exit={{ opacity: 0, y: 10, filter: "blur(8px)" }}
+                    custom={0.05 + delayIndex * 0.03}
+                    className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
                   >
-                    {m.content}
+                    <div
+                      className={`max-w-[92%] md:max-w-[70%] rounded-2xl px-4 py-3 text-sm md:text-base whitespace-pre-line leading-relaxed shadow ${
+                        m.role === "user"
+                          ? "bg-purple-600 text-white"
+                          : isDark
+                          ? "bg-black/70 text-gray-100 border border-white/10"
+                          : "bg-white text-gray-900 border border-black/10"
+                      }`}
+                    >
+                      {m.content}
 
-                    {m.chips && m.chips.length > 0 && (
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {m.chips.map((c) => (
-                          <button
-                            key={c.value + c.label}
-                            onClick={() => {
-                              if (stage === "choose_spread") handleChooseSpread(c.value);
-                              else handleSend(c.value);
-                            }}
-                            className={`text-xs md:text-sm px-3 py-2 rounded-full border transition ${
-                              isDark ? "border-white/15 hover:bg-white/10" : "border-black/10 hover:bg-black/5"
-                            }`}
-                          >
-                            {c.label}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
+                      {m.chips && m.chips.length > 0 && (
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {m.chips.map((c) => (
+                            <button
+                              key={c.value + c.label}
+                              onClick={() => {
+                                if (stage === "choose_spread") handleChooseSpread(c.value);
+                                else handleSend(c.value);
+                              }}
+                              className={`text-xs md:text-sm px-3 py-2 rounded-full border transition ${
+                                isDark ? "border-white/15 hover:bg-white/10" : "border-black/10 hover:bg-black/5"
+                              }`}
+                            >
+                              {c.label}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
             </AnimatePresence>
           </div>
         </section>
 
-        {/* Input sticky bottom */}
-        <footer className={`sticky bottom-0 z-20   `}>
+        {/* Input sticky bottom — smoke on mount */}
+        <motion.footer
+          className="sticky bottom-0 z-20"
+          variants={fadeSmokeWind("left")}
+          initial="hidden"
+          animate="visible"
+          custom={0.1}
+        >
           <div
             className="
               mx-auto w-full max-w-5xl px-4 pt-3
@@ -426,9 +463,8 @@ export default function OracleLandingPage() {
                 {stage === "reading" ? "..." : "Envoyer"}
               </button>
             </div>
-
           </div>
-        </footer>
+        </motion.footer>
       </div>
     </main>
   );

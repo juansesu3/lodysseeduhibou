@@ -2,26 +2,33 @@
 
 import React, { useEffect, useState } from "react";
 import { GiOwl } from "react-icons/gi";
-import { FaInstagram, FaFacebookF, FaTwitter } from "react-icons/fa";
+import { FaInstagram, FaFacebookF } from "react-icons/fa";
 import ThemeToggle from "./ThemeToggle";
 import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 const Footer = () => {
   const { theme } = useTheme();
   const pathname = usePathname();
 
-  // ✅ Ocultar en /oracle y /oracle/*
   const hideOnOracle = pathname === "/oracle" || pathname.startsWith("/oracle/");
-
   const isDark = theme === "dark";
-  const [mounted, setMounted] = useState(false);
 
+  const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   if (!mounted) return null;
 
-  // ✅ Renderizado condicional
   if (hideOnOracle) return null;
+
+  // ✅ Label y href independientes
+  const quickLinks: { label: string; href: string; external?: boolean }[] = [
+    { label: "Accueil", href: "/" },
+    { label: "Tirages", href: "/#tirages" },
+    { label: "Oracle intelligent", href: "/oracle" },
+    { label: "À propos", href: "/qui-est-la-sorciere" },
+    { label: "Contact", href: "/contact" },
+  ];
 
   return (
     <footer
@@ -40,42 +47,37 @@ const Footer = () => {
 
         {/* Links rápidos */}
         <div className="flex flex-col md:flex-row gap-4 md:gap-8 text-center">
-          {["Accueil", "Tirages", "Oracle intelligent", "À propos", "Contact"].map((link) => (
-            <a
-              key={link}
-              href={`#${link.toLowerCase().replace(/\s+/g, "")}`}
+          {quickLinks.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
               className="hover:text-[#A57C8C] transition-colors duration-300"
             >
-              {link}
-            </a>
+              {l.label}
+            </Link>
           ))}
         </div>
 
         {/* Redes sociales + Toggle */}
         <div className="flex items-center gap-4 text-xl">
           <a
-            href="https://instagram.com"
+            href="https://www.instagram.com/lodysseeduhibou/"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-[#A57C8C]"
+            aria-label="Instagram"
           >
             <FaInstagram />
           </a>
+
           <a
-            href="https://facebook.com"
+            href="https://www.facebook.com/profile.php?id=61556417047034"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-[#A57C8C]"
+            aria-label="Facebook"
           >
             <FaFacebookF />
-          </a>
-          <a
-            href="https://twitter.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-[#A57C8C]"
-          >
-            <FaTwitter />
           </a>
 
           <ThemeToggle />
